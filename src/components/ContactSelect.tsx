@@ -10,7 +10,7 @@ type ContactSelectProps = {
 
 const searchByName = (searchValue: string, name: string) =>
   !searchValue.length ||
-  name
+  (name || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
