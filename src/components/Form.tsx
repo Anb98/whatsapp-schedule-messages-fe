@@ -34,6 +34,7 @@ export const FormMessage = ({}: FormMessageProps) => {
         message: values.message,
         datetime: datetime,
       });
+      form.resetFields();
 
       messageApi.success(
         hasDate ? "Message scheduled successfully" : "Message sent successfully"
