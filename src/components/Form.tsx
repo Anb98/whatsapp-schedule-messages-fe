@@ -4,8 +4,11 @@ import useFetch from "use-http";
 import dayjs, { Dayjs } from "dayjs";
 import { useForm } from "antd/es/form/Form";
 import { API_URL } from "../constants/urls";
+import { Message } from "../types/responses";
 
-type FormMessageProps = {};
+type FormMessageProps = {
+  onMessageSent: (value: Message) => void;
+};
 
 type FormDataType = {
   contacts: string[];
@@ -14,7 +17,7 @@ type FormDataType = {
   time: Dayjs;
 };
 
-export const FormMessage = ({}: FormMessageProps) => {
+export const FormMessage = ({ onMessageSent }: FormMessageProps) => {
   const [form] = useForm<FormDataType>();
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -29,12 +32,13 @@ export const FormMessage = ({}: FormMessageProps) => {
             .set("minute", values.time.minute())
         : undefined;
 
-      await post("/messages", {
+      const { result } = await post("/messages", {
         contacts: values.contacts,
         message: values.message,
         datetime: datetime,
       });
       form.resetFields();
+      onMessageSent(result);
 
       messageApi.success(
         hasDate ? "Message scheduled successfully" : "Message sent successfully"
@@ -46,7 +50,12 @@ export const FormMessage = ({}: FormMessageProps) => {
   };
 
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical">
+    <Form
+      form={form}
+      onFinish={onFinish}
+      layout="vertical"
+      className="md:w-1/2"
+    >
       {contextHolder}
       <Form.Item
         name="contacts"
@@ -77,7 +86,7 @@ export const FormMessage = ({}: FormMessageProps) => {
           label="Date"
           className="[&>div>div>label]:text-white flex-1"
         >
-          <DatePicker minDate={dayjs()} />
+          <DatePicker minDate={dayjs()} className="w-full" />
         </Form.Item>
         <Form.Item
           name="time"
