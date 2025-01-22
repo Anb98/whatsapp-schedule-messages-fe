@@ -3,15 +3,15 @@ import { io } from "socket.io-client";
 import { AuthEvent, QREvent } from "./types/socket";
 import { Badge, Popconfirm, QRCode, Spin } from "antd";
 import { LoadingOutlined, LogoutOutlined } from "@ant-design/icons";
-import { FormMessage } from "./components/Form";
 import useFetch from "use-http";
 import { API_URL, SOCKET_URL } from "./constants/urls";
+import { Logged } from "./components/Logged";
 
 function App() {
   const [connected, setConnected] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [qrCode, setQrCode] = useState("");
-  const { post } = useFetch(API_URL);
+  const { post } = useFetch(`${API_URL}/auth`);
 
   useEffect(() => {
     const socket = io(SOCKET_URL);
@@ -84,7 +84,7 @@ function App() {
             <QRCode className="bg-white" type="svg" value={qrCode} />
           )}
 
-          {isLogged && <FormMessage />}
+          {isLogged && <Logged />}
         </div>
       </div>
     </main>
