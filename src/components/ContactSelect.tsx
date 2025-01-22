@@ -21,9 +21,11 @@ const searchByNumber = (searchValue: string, number: string) =>
 
 export const ContactSelect = ({ onChange }: ContactSelectProps) => {
   const [searchValue, setSearchValue] = useState("");
-  const { loading, data = { contacts: [] } } = useFetch<{
-    contacts: ContactResponse[];
-  }>(`${API_URL}/contacts`, {}, []);
+  const { loading, data = { contacts: [] } } = useFetch<ContactResponse>(
+    `${API_URL}/contacts`,
+    {},
+    []
+  );
 
   const options = useMemo(
     () => [
