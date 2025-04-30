@@ -1,4 +1,4 @@
-import { List } from "antd";
+import { Button, List } from "antd";
 import { Message, MessageStatus } from "../types/responses";
 import { useMemo } from "react";
 import dayjs from "dayjs";
@@ -7,11 +7,12 @@ import cx from "classnames";
 type HistoryProps = {
   data: Message[] | undefined;
   loading: boolean;
+  onLoadMore: () => void;
 };
 
 const getDateFormat = (value: Date) => dayjs(value).format("DD/MM/YYYY HH:mm");
 
-export const History = ({ data, loading }: HistoryProps) => {
+export const History = ({ data, loading, onLoadMore }: HistoryProps) => {
   const dataSource = useMemo(() => {
     return (
       data?.reverse().map((message) => ({
@@ -65,11 +66,26 @@ export const History = ({ data, loading }: HistoryProps) => {
   return (
     <div className="md:w-1/2">
       <List
+        loadMore={
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: 12,
+              height: 32,
+              lineHeight: "32px",
+            }}
+          >
+            <Button onClick={onLoadMore}>Load more</Button>
+          </div>
+        }
         itemLayout="horizontal"
         dataSource={dataSource}
         loading={loading}
         renderItem={(item) => (
-          <List.Item className="px-4 bg-slate-400 rounded-lg mb-2">
+          <List.Item
+            className="px-4 bg-slate-400 rounded-lg mb-2"
+            key={item.key}
+          >
             <List.Item.Meta
               title={item.title}
               description={item.descriptions}

@@ -1,30 +1,38 @@
 import useFetch from "use-http";
-import { Message, MessagesResponse } from "../types/responses";
+import { MessagesResponse } from "../types/responses";
 import { FormMessage } from "./Form";
 import { History } from "./History";
 import { API_URL } from "../constants/urls";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+const defaultTake = 10;
+const defaultSkip = 0;
 
 export const Logged = () => {
-  const [data, setData] = useState<Message[]>([]);
+  const [skip, setSkip] = useState(defaultSkip);
+
   const { loading, data: response } = useFetch<MessagesResponse>(
-    `${API_URL}/messages`,
+    `${API_URL}/messages?skip=${skip}&take=${defaultTake}`,
     {},
-    []
+    [skip]
   );
 
-  useEffect(() => {
-    if (response) {
-      setData(response.messages);
-    }
-  }, [response]);
+  const handleLoadMore = () => {
+    setSkip((prev) => prev + defaultTake);
+  };
+
+  const handleMessageSent = () => {
+    setSkip(defaultSkip);
+  };
 
   return (
     <div className="w-full flex gap-8 justify-center flex-col md:flex-row">
-      <FormMessage
-        onMessageSent={(item) => setData((prev) => [...prev, item])}
+      <FormMessage onMessageSent={handleMessageSent} />
+      <History
+        data={response?.messages || []}
+        loading={loading}
+        onLoadMore={handleLoadMore}
       />
-      <History data={data} loading={loading} />
     </div>
   );
 };
