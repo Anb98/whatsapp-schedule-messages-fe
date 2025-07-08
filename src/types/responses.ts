@@ -11,6 +11,7 @@ export enum MessageStatus {
   SENT = "sent",
   FAILED = "failed",
   PARTIAL = "partial",
+  CANCELED = "canceled",
 }
 
 export type Message = {

@@ -11,7 +11,11 @@ const defaultSkip = 0;
 export const Logged = () => {
   const [skip, setSkip] = useState(defaultSkip);
 
-  const { loading, data: response } = useFetch<MessagesResponse>(
+  const {
+    loading,
+    data: response,
+    get,
+  } = useFetch<MessagesResponse>(
     `${API_URL}/messages?skip=${skip}&take=${defaultTake}`,
     {},
     [skip]
@@ -21,8 +25,13 @@ export const Logged = () => {
     setSkip((prev) => prev + defaultTake);
   };
 
+  const refetchMessages = () => {
+    get(`&retry=${Math.random()}`);
+  };
+
   const handleMessageSent = () => {
     setSkip(defaultSkip);
+    refetchMessages();
   };
 
   return (
@@ -31,6 +40,7 @@ export const Logged = () => {
       <History
         data={response?.messages || []}
         loading={loading}
+        onDeleteMessage={refetchMessages}
         onLoadMore={handleLoadMore}
       />
     </div>
